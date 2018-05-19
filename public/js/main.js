@@ -14,13 +14,12 @@ const Page = function()
         1200
     ];
 
-    // Boolean to track if a breakpoint has just been traversed
-    let __justPassed;
+    let previousBp;
 
 
-    const setup = () =>
+    const setup = (bp) =>
     {
-        __justPassed = false;
+        previousBp = bp;
     };
 
 
@@ -46,14 +45,11 @@ const Page = function()
 
     const justPassed = (bp) =>
     {
-        let delta = Math.abs(window.innerWidth - bp);
-        if (delta < 5 && !__justPassed) {
-            __justPassed = true;
-        } else {
-            __justPassed = false;
+        if (bp != previousBp) {
+            previousBp = bp;
+            return true;
         }
-
-        return __justPassed;
+        return false;
     };
 
 
