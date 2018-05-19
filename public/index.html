@@ -21,6 +21,14 @@
             // test
             page.addGalleryItem();
 
+            // Compute loop
+            window.addEventListener('resize', evt => {
+                let bp;
+                if ((bp = page.getBreakpoint()) && page.justPassed(bp)) {
+                    console.log(bp);
+                }
+            });
+
 
         </script>
     </body>
