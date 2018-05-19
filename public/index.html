@@ -29,7 +29,6 @@
                 // This is the current breakpoint divided by card width.
                 // Neglecting card margin...
                 const cols = Math.floor(bp / 139);
-                console.log(cols);
 
                 // Will do this more intelligently about this later.
                 // For now just hard code...
@@ -41,7 +40,6 @@
                 {
                     const targetRow = Math.floor(i / cols);
                     const targetCol = i - (targetRow * cols);
-                    console.log(targetCol + ' ' + targetRow);
 
                     // column number times card width including margin
                     const xpos = targetCol * (139 + 10);
