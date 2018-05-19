@@ -39,6 +39,11 @@ const Page = function()
 
         // finally add to gallery (and register evt?)
         card.classList.add('card');
+
+        const max = 300;
+        const min = 75;
+        const height = min + (Math.random() * (max - min));
+        card.style.height = height + 'px';
         domElem.appendChild(card);
     };
 

@@ -20,7 +20,7 @@
             page.setup(page.getBreakpoint());
 
             // test
-            for (let i = 0; i < 6; i++)
+            for (let i = 0; i < 15; i++)
                 page.addGalleryItem();
 
 
@@ -48,8 +48,8 @@
                     // Because it depends on the cards above it...
                     let ypos = 0;
                     if (targetRow - 1 >= 0) {
-                        for (let i = targetRow - 1; i >= 0; i--) {
-                            ypos += cards[(targetRow - 1) * cols + targetCol].clientHeight + 10;
+                        for (let j = targetRow - 1; j >= 0; j--) {
+                            ypos += cards[j * cols + targetCol].clientHeight + 10;
                         }
                     }
 
