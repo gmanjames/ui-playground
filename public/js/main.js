@@ -8,10 +8,10 @@ const Page = function()
     // Cheat and use bootstrap's breakpoints...
     const BP = [
 
-         576,
-         768,
-         992,
-        1200
+        320,
+        437,
+        604,
+        759
     ];
 
     let previousBp;

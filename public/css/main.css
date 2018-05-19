@@ -18,18 +18,57 @@ html, html * {
     box-sizing: border-box;
 }
 
+body {
+    padding: 0 1rem;
+}
+
+/* By default, assume a small screen
+ *
+ * Want 2 cards
+ */
 section[role="gallery"] {
-    padding: 0 1.5rem;
+    position: relative;
+    margin: 0 auto;
+    width: 288px;
+    height: 100%;
 }
 
 .card {
+    position: absolute;
     display: inline-block;
     border-radius: 2px;
     box-shadow: 0 1px 2px black;
     background-color: white;
-    padding: 1rem;
-    width: 100%;
-    min-width: 120px;
-    max-width: 240px;
-    margin-right: 10px;
+    width: 139px;
+    transition: transform 0.5s ease-out;
+}
+
+/* min-width = <bp> + ( 2 * <padding size> )
+ *
+ * Want 3 cards
+ */
+@media (min-width: 469px) {
+    section[role="gallery"] {
+        width: 437px;
+    }
+}
+
+/* min-width = <bp> + ( 2 * <padding size> )
+ *
+ * Want 4 cards
+ */
+@media (min-width: 618px) {
+    section[role="gallery"] {
+        width: 586px;
+    }
+}
+
+/* min-width = <bp> + ( 2 * <padding size> )
+ *
+ * Want 4 cards
+ */
+@media (min-width: 767px) {
+    section[role="gallery"] {
+        width: 735px;
+    }
 }

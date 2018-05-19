@@ -1,5 +1,6 @@
 <html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="css/main.css" />
     </head>
     <body>
@@ -19,13 +20,54 @@
             page.setup(page.getBreakpoint());
 
             // test
-            page.addGalleryItem();
+            for (let i = 0; i < 6; i++)
+                page.addGalleryItem();
 
-            // Compute loop
+
+            function computeCardPositions(bp)
+            {
+                // This is the current breakpoint divided by card width.
+                // Neglecting card margin...
+                const cols = Math.floor(bp / 139);
+                console.log(cols);
+
+                // Will do this more intelligently about this later.
+                // For now just hard code...
+                const rows = 5;
+
+                // Figure out max rows and columns
+                const cards = document.querySelectorAll('.card');
+                for (let i = 0; i < cards.length; i++)
+                {
+                    const targetRow = Math.floor(i / cols);
+                    const targetCol = i - (targetRow * cols);
+                    console.log(targetCol + ' ' + targetRow);
+
+                    // column number times card width including margin
+                    const xpos = targetCol * (139 + 10);
+
+                    // This is harder...
+                    // Because it depends on the cards above it...
+                    let ypos = 0;
+                    if (targetRow - 1 >= 0) {
+                        for (let i = targetRow - 1; i >= 0; i--) {
+                            ypos += cards[(targetRow - 1) * cols + targetCol].clientHeight + 10;
+                        }
+                    }
+
+                    const card = cards[i];
+                    card.style.transform = 'translate(' + xpos + 'px, ' + ypos + 'px)'
+                }
+            }
+
+
+            computeCardPositions(page.getBreakpoint());
+
+            // Main 'resize' loop
             window.addEventListener('resize', evt => {
                 let bp;
                 if ((bp = page.getBreakpoint()) && page.justPassed(bp)) {
-                    console.log(bp);
+                    computeCardPositions(bp);
                 }
             });
 
