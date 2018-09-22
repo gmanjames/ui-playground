@@ -1,0 +1,76 @@
+html, html * {
+    box-sizing: border-box;
+}
+
+html {
+    position: relative;
+    font-size: 16px;
+    font-family: sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    padding: 0 1.5em;
+    background-color: hsl(0, 0%, 90%);
+}
+
+.grid, .image-bar {
+    float: left;
+    height: 100%;
+}
+
+.grid {
+    padding-top: 1.5em;
+    padding-right: 1.5em;
+    width: 75%;
+    float: left;
+    max-height: 100%;
+    overflow-y: scroll;
+}
+
+.image-bar {
+    width: 25%;
+    border-left: 4px dashed hsl(0, 0%, 70%);
+    padding-left: 1.5em;
+}
+
+.image-bar img {
+    max-width: 100%;
+    margin-bottom: 1.5em;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px hsl(0, 0%, 30%);
+    display: block;
+
+}
+
+.well {
+    padding: 1.5em;
+    border-radius: 3px;
+    margin-bottom: 2em;
+}
+
+.well.well-default {
+    background-color: hsl(0, 0%, 80%);
+}
+
+.well.well-dark {
+    color: white;
+    background-color: hsl(0, 0%, 20%);
+}
+
+.cell {
+    float: left;
+    border-radius: 3px;
+    background-color: hsl(0, 0%, 50%);
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.cell.last {
+    margin-right: 0;
+}

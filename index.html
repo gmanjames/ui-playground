@@ -1,75 +1,168 @@
-<html lang="en">
+<!DOCTYPE html>
+<html>
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="css/main.css" />
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Image Drag-and-drop POC</title>
+        
+        <link rel="stylesheet" type="text/css" href="./css/style.css"/>
     </head>
     <body>
 
-        <main>
-            <h3>Try resizing the page to re-flow the cards!</h3>
-            <section id="gallery" role="gallery">
+        <!-- grid with cells for images to be dragged to -->
 
+        <div class="grid">
+            <p id="dragging">Dragging: <span style="color: blue;">false</span></p>
+            <p id="dragStats">--</p>
+            <form id="gridForm" method="POST">
+                <div class="well well-dark">
+                    <label for="height">Height &nbsp</label>
+                    <input id="imSelHeight" type="text" name="height"/>
+                    
+                    <label for="width">Width &nbsp</label>
+                    <input id="imSelWidth" type="text" name="width"/>
+        
+                    <button id="create">create grid</button>
+                </div>
+                <div id="gridCells"></div>
+            </form>
+            
+        </div>
 
-            </section>
-        </main>
+        <div id="imBar" class="image-bar">
+            <!-- obvi these would have to be dynamically created -->
+            <img draggable="false" data-url="img1" src="./images/atef-brand1.png"/>
+            <img draggable="false" data-url="img2" src="./images/atef-brand2.png"/>
+            <img draggable="false" data-url="img3" src="./images/atef-brand3.png"/>
+        </div>
 
         <!-- js -->
-        <script src="js/main.js"></script>
         <script>
-            
-            const page = Page();
-            page.setup(page.getBreakpoint());
+            const GUTTER = 10;
 
-            // test
-            for (let i = 0; i < 15; i++)
-                page.addGalleryItem();
+            window.addEventListener('resize', resizeGrid);
 
+            //
+            // SIMULATE DRAG EVENT
+            //
 
-            function computeCardPositions(bp)
-            {
-                // This is the current breakpoint divided by card width.
-                // Neglecting card margin...
-                const cols = Math.floor(bp / 139);
+            let isDown, isMove, isUp, draggedItem = {};
+            window.addEventListener('mousedown', e => {
+                //e.preventDefault();
 
-                // Will do this more intelligently about this later.
-                // For now just hard code...
-                const rows = 5;
+                isDown = true
+                if (e.target.dataset && e.target.dataset.url) {
+                    draggedItem = e.target;
+                }
+            });
+            window.addEventListener('mousemove', e => {
+                //e.preventDefault();
 
-                // Figure out max rows and columns
-                const cards = document.querySelectorAll('.card');
-                for (let i = 0; i < cards.length; i++)
-                {
-                    const targetRow = Math.floor(i / cols);
-                    const targetCol = i - (targetRow * cols);
-
-                    // column number times card width including margin
-                    const xpos = targetCol * (139 + 10);
-
-                    // This is harder...
-                    // Because it depends on the cards above it...
-                    let ypos = 0;
-                    if (targetRow - 1 >= 0) {
-                        for (let j = targetRow - 1; j >= 0; j--) {
-                            ypos += cards[j * cols + targetCol].clientHeight + 10;
-                        }
+                isMove = true;
+                if (isDown) {
+                    // oh boy this is probably dumb...
+                    if (draggedItem.dataset) {
+                        makeDraggable(draggedItem);
+                        draggedItem.style.top  = (e.screenY - draggedItem.clientHeight*1.5) + 'px';
+                        draggedItem.style.left = (e.screenX - draggedItem.clientWidth*0.5) + 'px';
                     }
 
-                    const card = cards[i];
-                    card.style.transform = 'translate(' + xpos + 'px, ' + ypos + 'px)'
+                    // report
+                    document.getElementById('dragging').querySelector('span').innerHTML = 'true';
+                    document.getElementById('dragStats').innerHTML = `x: ${e.screenX}, y: ${e.screenY}`;
                 }
+            });
+            window.addEventListener('mouseup'  , e => {
+                //e.preventDefault();
+
+                if (isDown && isMove) {
+                    if (draggedItem.dataset) {
+                        console.log('you dropped ' + draggedItem.dataset.url + '!');
+                    }
+                }
+        
+                // restore to defaults
+                isDown = false;
+                isMove = false;
+                isUp   = true;
+                draggedItem = {}
+                
+                // report
+                document.getElementById('dragging').querySelector('span').innerHTML = 'false';
+                document.getElementById('dragStats').innerHTML = '--';
+            });
+            // END DRAG STUFF
+
+
+            // bunch of elements that will get used all of the time
+            const gridForm  = document.getElementById('gridForm');
+            const gridCells = document.getElementById('gridCells');
+
+            const imGridSelH = document.getElementById('imSelHeight');
+            const imGridSelW = document.getElementById('imSelWidth');
+            
+            document.getElementById('create').addEventListener('click', e => {
+                e.preventDefault();
+                createGrid(imGridSelH.value, imGridSelW.value);
+            });
+
+            // util functions...
+            const width  = _ => parseInt(imGridSelW.value);
+            const height = _ => parseInt(imGridSelH.value);
+            const availableWidth = _ => gridForm.clientWidth - ((width() - 1) * GUTTER);
+
+
+            function makeDraggable(elem) {
+                elem.style.position = 'absolute';
             }
 
 
-            computeCardPositions(page.getBreakpoint());
+            function createCell() {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.draggable = true;
+                return cell;
+            }
 
-            // Main 'resize' loop
-            window.addEventListener('resize', evt => {
-                let bp;
-                if ((bp = page.getBreakpoint()) && page.justPassed(bp)) {
-                    computeCardPositions(bp);
+
+            function createHiddenInput() {
+                //...
+            }
+
+
+            function resizeGrid( e ) {
+                let cells  = document.querySelectorAll('.cell');
+                cells.forEach((cell, index) => {
+                    let size = (availableWidth() * (1 / width()));
+                    let last = availableWidth() / size;
+
+                    if ((index + 1) % last === 0) {
+                        cell.classList.add('last');
+                    }
+
+                    cell.style.width  = size + 'px';
+                    cell.style.height = size + 'px';
+                })
+            }
+
+
+            function createGrid() {  
+                if (width() > 20 || height() > 20) { // becomes ridiculous...
+                    alert('That is a little too big...');
+                    return;
                 }
-            });
 
+                gridCells.innerHTML = '';
+                for (let i = 0; i < width() * height(); i++) {
+                    const cell = createCell();
+                    gridCells.appendChild(cell);
+                }
+                resizeGrid();
+            }
+
+
+            // END GRID -->>>
 
         </script>
     </body>
